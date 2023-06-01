@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,14 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
             Route::post('{id}', [RoleController::class, 'update'])->name('admin.roles.update');
         });
+
+        Route::prefix('permissions')->group(function () {
+            Route::get('',  [PermissionController::class, 'index'])->name('admin.permissions.list');
+            Route::post('', [PermissionController::class, 'store'])->name('admin.permissions.store');
+            Route::delete('', [PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
+            Route::post('{id}', [PermissionController::class, 'update'])->name('admin.permissions.update');
+        });
+
         Route::prefix('categories')->group(function () {
             Route::get('', function () {
                 return view('pages.admin.categories.category-list');
