@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -50,9 +51,10 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('roles')->group(function () {
-            Route::get('', function () {
-                return view('pages.admin.roles.role-list');
-            })->name('admin.roles.list');
+            Route::get('',  [RoleController::class, 'index'])->name('admin.roles.list');
+            Route::post('', [RoleController::class, 'store'])->name('admin.roles.store');
+            Route::delete('', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
+            Route::post('{id}', [RoleController::class, 'update'])->name('admin.roles.update');
         });
         Route::prefix('categories')->group(function () {
             Route::get('', function () {
