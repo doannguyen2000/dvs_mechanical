@@ -13,6 +13,6 @@ class Permission extends Model
 
     protected $fillable = [
         'permission_code',
-        'permission_name	'
+        'permission_name'
     ];
 }
