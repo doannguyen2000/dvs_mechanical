@@ -4,7 +4,7 @@
     <div class="container">
         <div class="card mt-4">
             <div class="card-body text-start">
-                <h5 class="card-title">{{__('Permissions list')}}</h5>
+                <h5 class="card-title">{{ __('Permissions list') }}</h5>
                 <hr>
                 <div class="container-fluid">
                     <div class="row">
@@ -15,8 +15,8 @@
                                     <div class="w-auto input-group">
                                         <input type="text" class="border form-control-sm"
                                             placeholder="Recipient's permissionname" aria-label="Recipient's permissionname"
-                                            aria-describedby="button-addon2" name="search_permission"
-                                            value="{{ old('search_permission') ?? (Request::get('search_permission') ?? '') }}">
+                                            aria-describedby="button-addon2" name="permission_search"
+                                            value="{{ old('permission_search') ?? (Request::get('permission_search') ?? '') }}">
                                         <button class="btn btn-sm border btn-outline-secondary" type="submit"
                                             id="button-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                                     </div>
@@ -26,7 +26,7 @@
                         <div class="col align-self-end">
                             <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
                                 data-bs-target="#createNewpermissionModal" type="button"><span><i
-                                        class="fa-solid fa-plus"></i></i></span>&nbsp;{{__('New permissions')}}</button>
+                                        class="fa-solid fa-plus"></i></i></span>&nbsp;{{ __('New permissions') }}</button>
                         </div>
                     </div>
                 </div>
@@ -39,13 +39,13 @@
                                     <input class="form-check-input" type="checkbox" value=""
                                         onclick="toggleAllCheckboxes();" id="allPermissionsChecked">
                                     <label class="form-check-label" for="allPermissionsChecked">
-                                        {{__('All')}}
+                                        {{ __('All') }}
                                     </label>
                                 </div>
                             </th>
-                            <th scope="col">{{__('Permissions code')}}</th>
-                            <th scope="col">{{__('Permissions name')}}</th>
-                            <th class="text-center" scope="col">{{__('Action')}}</th>
+                            <th scope="col">{{ __('Permissions code') }}</th>
+                            <th scope="col">{{ __('Permissions name') }}</th>
+                            <th class="text-center" scope="col">{{ __('Action') }}</th>
                         </tr>
                     </thead>
                     <tbody id="tbdPermissionList">
@@ -82,49 +82,60 @@
 
                     </tbody>
                 </table>
-                <div class="container overflow-hidden">
+                <div class="container">
                     <div class="row gx-5">
                         <div class="col-sm col-xs">
-                            <div class="justify-content-end">
-                                <form id="formPermissionDelete" action="{{ route('admin.permissions.destroy') }}"
-                                    method="POST">
+                            <div class="w-auto">
+                                <form hidden id="formPermissionFunction" action="{{ route('admin.permissions.destroy') }}">
                                     @csrf
-                                    @method('delete')
-                                    <input id="inputListPermissionDelete" name="permission_ids" type="text" hidden>
-                                    <button onclick="deletepermissions()" type="button"
-                                        class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                    <input id="inputPermissionFunction" type="text" hidden>
                                 </form>
-
+                                <button onclick="deletePermissions()" type="button" style="display: inline-block;"
+                                    class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <select class="form-select-sm form-select m-0" id="selectPermissionPaginate"
+                                    style="width: 75px;display: inline-block" aria-label="Default select example"
+                                    onchange="paginatePermissions();">
+                                    <option @if (Request::get('permission_paginate' == null) || Request::get('permission_paginate') == '5') selected @endif value="5">5</option>
+                                    <option @if (Request::get('permission_paginate') == '10') selected @endif value="10">10</option>
+                                    <option @if (Request::get('permission_paginate') == '20') selected @endif value="20">20</option>
+                                    <option @if (Request::get('permission_paginate') == '50') selected @endif value="50">50</option>
+                                    <option @if (Request::get('permission_paginate') == '100') selected @endif value="100">100</option>
+                                    <option @if (Request::get('permission_paginate') == '0') selected @endif value="0">All</option>
+                                </select>
                             </div>
+
                         </div>
-                        @isset($permissions)
-                            @php
-                                $i = 0;
-                                $totalPage = $permissions->total();
-                            @endphp
-                            <div class="col-sm col-xs align-self-end">
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination justify-content-end">
-                                        <li class="page-item">
-                                            <a class="page-link sm" href="{{ $permissions->previousPageUrl() }}">
-                                                << </a>
-                                        </li>
-
-                                        @foreach ($permissions->getUrlRange(1, $totalPage) as $link)
-                                            <li class="page-item @if ($permissions->currentPage() == ++$i) active @endif"><a
-                                                    class="page-link sm" href="{{ $link }}">{{ $i }}</a>
+                        @if (Request::get('permission_paginate') !== '0')
+                            @isset($permissions)
+                                @php
+                                    $i = 0;
+                                @endphp
+                                <div class="col-sm col-xs align-self-end">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination justify-content-end">
+                                            <li class="page-item">
+                                                <a class="page-link sm" href="{{ $permissions->previousPageUrl() }}">
+                                                    << </a>
                                             </li>
-                                        @endforeach
-                                        <li class="page-item">
-                                            <a class="page-link sm" href="{{ $permissions->nextPageUrl() }}">>></a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            @php
-                                unset($i);
-                            @endphp
-                        @endisset
+
+                                            @foreach ($permissions->getUrlRange(1, $permissions->lastPage()) as $link)
+                                                <li class="page-item @if ($permissions->currentPage() == ++$i) active @endif"><a
+                                                        class="page-link sm"
+                                                        href="{{ $link }}">{{ $i }}</a>
+                                                </li>
+                                            @endforeach
+                                            <li class="page-item">
+                                                <a class="page-link sm" href="{{ $permissions->nextPageUrl() }}">>></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                @php
+                                    unset($i);
+                                @endphp
+                            @endisset
+                        @endif
+
 
                     </div>
                 </div>
@@ -257,6 +268,41 @@
             document.getElementById('inputShowPermissionCode').value = permissionCode;
             document.getElementById('inputShowPermissionName').value = permissionName;
             document.getElementById('formShowPermission').action = action;
+        }
+
+        function deletePermissions() {
+            var tbody = document.getElementById('tbdPermissionList');
+            var checkboxes = tbody.querySelectorAll('input[type="checkbox"]');
+            var values = [];
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    values.push(checkboxes[i].value);
+                }
+            }
+
+            if (values.length != 0) {
+                document.getElementById('inputPermissionFunction').value = values.join(',');
+                document.getElementById('inputPermissionFunction').name = "permission_ids";
+                submitFormAction(document.getElementById('formPermissionFunction'),
+                    "{{ route('admin.permissions.destroy') }}",
+                    'post');
+            } else {
+                alert('null values');
+            }
+        }
+
+        function paginatePermissions() {
+            document.getElementById('inputPermissionFunction').value = document.getElementById('selectPermissionPaginate')
+                .value;
+            document.getElementById('inputPermissionFunction').name = "permission_paginate";
+            submitFormAction(document.getElementById('formPermissionFunction'), "{{ route('admin.permissions.list') }}",
+                'get');
+        }
+
+        function submitFormAction(form, action, method = 'get') {
+            form.action = action;
+            form.setAttribute("method", method);
+            form.submit();
         }
     </script>
 @endsection

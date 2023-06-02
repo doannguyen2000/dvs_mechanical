@@ -3,17 +3,22 @@
 namespace App\Repositories;
 
 use App\Models\Role;
-
+use App\Models\RolePermission;
 
 class RoleRepository
 {
     public function getAll($params)
     {
-        $roles = Role::where(function ($query) use ($params) {
-            if (!empty($params['search_role']))
-                $query->where('role_name', 'like', '%' . $params['search_role'] . '%')
-                    ->orWhere('role_code', 'like', '%' . $params['search_role'] . '%');
-        })->paginate(5);
+        $roles = Role::with('permissions')->where(function ($query) use ($params) {
+            if (!empty($params['role_search']))
+                $query->where('role_name', 'like', '%' . $params['role_search'] . '%')
+                    ->orWhere('role_code', 'like', '%' . $params['role_search'] . '%');
+        });
+        if (isset($params['role_paginate']) && $params['role_paginate'] === '0') {
+            return $roles->get();
+        } else {
+            return $roles->paginate((isset($params['role_paginate']) ? $params['role_paginate'] : 5));
+        }
         return $roles;
     }
 
@@ -32,9 +37,35 @@ class RoleRepository
     public function update($params, $id)
     {
         $role = Role::find($id);
-        if (!$role) return false;
+
+        if (!$role) {
+            return false;
+        }
+
+        if (!empty($params['permission_code'])) {
+            $permissionCode = RolePermission::whereNotIn('permission_code', explode(',', $params['permission_code']))
+                ->where('role_code', $role->role_code)
+                ->pluck('permission_code')
+                ->toArray();
+
+            $role->permissions()->detach($permissionCode);
+        } else {
+            $role->permissions()->detach();
+        }
+
+        if (!empty($params['permission_code_new'])) {
+            $permissionCodeNew = array_unique(
+                isset($permissionCode)
+                    ? array_diff(explode(',', $params['permission_code_new']), explode(',', $params['permission_code']))
+                    : explode(',', $params['permission_code_new'])
+            );
+
+            $role->permissions()->attach($permissionCodeNew);
+        }
+
         return $role->update($params);
     }
+
 
 
     public function destroy($params)
