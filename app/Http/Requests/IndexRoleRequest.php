@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class IndexRoleRequest extends FormRequest
 {
@@ -24,7 +25,8 @@ class IndexRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'search_role' => ['nullable', 'string', 'max:30']
+            'role_search' => ['nullable', 'string', 'max:30'],
+            'role_paginate' => ['nullable', Rule::in(['5', '10', '20', '50', '100' , '0'])]
         ];
     }
 }

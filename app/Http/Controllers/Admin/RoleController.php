@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\IndexRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Repositories\PermissionRepository;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,18 +15,19 @@ use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
-    protected $roleRepository;
+    protected $roleRepository, $permissionRepository;
 
-    public function __construct(RoleRepository $roleRepository)
+    public function __construct(RoleRepository $roleRepository, PermissionRepository $permissionRepository)
     {
         $this->roleRepository = $roleRepository;
+        $this->permissionRepository = $permissionRepository;
     }
 
     public function index(IndexRoleRequest $request)
     {
         try {
             $params = $request->validated();
-            return view('pages.admin.roles.role-list', ['roles' => $this->roleRepository->getAll($params)]);
+            return view('pages.admin.roles.role-list', ['roles' => $this->roleRepository->getAll($params), 'permissions' => $this->permissionRepository->getAll(['permission_paginate' => '0'])]);
         } catch (\Throwable $th) {
             return redirect()->back()->with('roleFalse', 'Created new role False');
         }
