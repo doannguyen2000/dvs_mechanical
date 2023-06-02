@@ -12,7 +12,7 @@ class PermissionRepository
             if (!empty($params['search_permission']))
                 $query->where('permission_name', 'like', '%' . $params['search_permission'] . '%')
                     ->orWhere('permission_code', 'like', '%' . $params['search_permission'] . '%');
-        })->paginate(2);
+        })->paginate(5);
         return $permissions;
     }
 

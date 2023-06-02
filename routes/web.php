@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Auth;
@@ -66,9 +67,10 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('categories')->group(function () {
-            Route::get('', function () {
-                return view('pages.admin.categories.category-list');
-            })->name('admin.categories.list');
+            Route::get('',  [CategoryController::class, 'index'])->name('admin.categories.list');
+            Route::post('', [CategoryController::class, 'store'])->name('admin.categories.store');
+            Route::delete('', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+            Route::post('{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
         });
     });
 });
