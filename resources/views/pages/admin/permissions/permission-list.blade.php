@@ -36,8 +36,8 @@
                         <tr>
                             <th scope="col">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        onclick="toggleAllCheckboxes();" id="allPermissionsChecked">
+                                    <input class="form-check-input" type="checkbox" value="" onclick="checkAllClick()"
+                                        id="allPermissionsChecked">
                                     <label class="form-check-label" for="allPermissionsChecked">
                                         {{ __('All') }}
                                     </label>
@@ -90,11 +90,13 @@
                                     @csrf
                                     <input id="inputPermissionFunction" type="text" hidden>
                                 </form>
-                                <button onclick="deletePermissions()" type="button" style="display: inline-block;"
-                                    class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
+                                <button
+                                    onclick="deleteItem(document.getElementById('tbdPermissionList'), document.getElementById('formPermissionFunction'), document.getElementById('inputPermissionFunction'), 'permission_ids', '{{ route('admin.permissions.destroy') }}', 'post');"
+                                    type="button" style="display: inline-block;" class="btn btn-sm btn-outline-danger"><i
+                                        class="fa-solid fa-trash-can"></i></button>
                                 <select class="form-select-sm form-select m-0" id="selectPermissionPaginate"
                                     style="width: 75px;display: inline-block" aria-label="Default select example"
-                                    onchange="paginatePermissions();">
+                                    onchange=" paginateItem(document.getElementById('formPermissionFunction'), 'permission_paginate', document.getElementById('inputPermissionFunction'), document.getElementById('selectPermissionPaginate'),'{{ route('admin.permissions.list') }}', 'get')">
                                     <option @if (Request::get('permission_paginate' == null) || Request::get('permission_paginate') == '5') selected @endif value="5">5</option>
                                     <option @if (Request::get('permission_paginate') == '10') selected @endif value="10">10</option>
                                     <option @if (Request::get('permission_paginate') == '20') selected @endif value="20">20</option>
@@ -236,73 +238,15 @@
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
         toastBootstrap.show();
 
-        function toggleAllCheckboxes() {
-            var allpermissionsCheckbox = document.getElementById('allPermissionsChecked');
-            var checkboxes = document.querySelectorAll(
-                '#tbdPermissionList input[type="checkbox"]:not(#allPermissionsChecked)');
-
-            for (var i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = allpermissionsCheckbox.checked;
-            }
-        }
-
-        function deletepermissions() {
-            var tbody = document.getElementById('tbdPermissionList');
-            var checkboxes = tbody.querySelectorAll('input[type="checkbox"]');
-            var values = [];
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    values.push(checkboxes[i].value);
-                }
-            }
-
-            if (values.length != 0) {
-                document.getElementById('inputListPermissionDelete').value = values.join(',');
-                document.getElementById('formPermissionDelete').submit();
-            } else {
-                alert('null values');
-            }
+        function checkAllClick() {
+            toggleAllCheckboxes(document.getElementById("allPermissionsChecked"), document.querySelectorAll(
+                "#tbdPermissionList input[type='checkbox']:not(#allPermissionsChecked)"));
         }
 
         function showpermission(action, permissionCode, permissionName, permissionIcon) {
             document.getElementById('inputShowPermissionCode').value = permissionCode;
             document.getElementById('inputShowPermissionName').value = permissionName;
             document.getElementById('formShowPermission').action = action;
-        }
-
-        function deletePermissions() {
-            var tbody = document.getElementById('tbdPermissionList');
-            var checkboxes = tbody.querySelectorAll('input[type="checkbox"]');
-            var values = [];
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    values.push(checkboxes[i].value);
-                }
-            }
-
-            if (values.length != 0) {
-                document.getElementById('inputPermissionFunction').value = values.join(',');
-                document.getElementById('inputPermissionFunction').name = "permission_ids";
-                submitFormAction(document.getElementById('formPermissionFunction'),
-                    "{{ route('admin.permissions.destroy') }}",
-                    'post');
-            } else {
-                alert('null values');
-            }
-        }
-
-        function paginatePermissions() {
-            document.getElementById('inputPermissionFunction').value = document.getElementById('selectPermissionPaginate')
-                .value;
-            document.getElementById('inputPermissionFunction').name = "permission_paginate";
-            submitFormAction(document.getElementById('formPermissionFunction'), "{{ route('admin.permissions.list') }}",
-                'get');
-        }
-
-        function submitFormAction(form, action, method = 'get') {
-            form.action = action;
-            form.setAttribute("method", method);
-            form.submit();
         }
     </script>
 @endsection

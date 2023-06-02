@@ -37,7 +37,7 @@
                             <th scope="col">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value=""
-                                        onclick="toggleAllCheckboxes();" id="allRolesChecked">
+                                        onclick="checkAllClick();" id="allRolesChecked">
                                     <label class="form-check-label" for="allRolesChecked">
                                         all
                                     </label>
@@ -92,11 +92,11 @@
                                     @csrf
                                     <input id="inputRoleFunction" type="text" hidden>
                                 </form>
-                                <button onclick="deleteRoles()" type="button" style="display: inline-block;"
+                                <button onclick="deleteItem(document.getElementById('tbdRoleList'), document.getElementById('formRoleFunction'), document.getElementById('inputRoleFunction'), 'role_ids', '{{ route('admin.roles.destroy') }}', 'post');" type="button" style="display: inline-block;"
                                     class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash-can"></i></button>
                                 <select class="form-select-sm form-select m-0" id="selectRolePaginate"
                                     style="width: 75px;display: inline-block" aria-label="Default select example"
-                                    onchange="paginateRoles();">
+                                    onchange="paginateItem(document.getElementById('formRoleFunction'),'role_paginate',document.getElementById('inputRoleFunction'), document.getElementById('selectRolePaginate'),'{{ route('admin.roles.list') }}','get')">
                                     <option @if (Request::get('role_paginate' == null) || Request::get('role_paginate') == '5') selected @endif value="5">5</option>
                                     <option @if (Request::get('role_paginate') == '10') selected @endif value="10">10</option>
                                     <option @if (Request::get('role_paginate') == '20') selected @endif value="20">20</option>
@@ -309,49 +309,10 @@
         const toastBootstrap = bootstrap.Toast.getOrCreateInstance(document.getElementById('liveToast'));
         toastBootstrap.show();
 
-        function toggleAllCheckboxes() {
-            var allRolesCheckbox = document.getElementById('allRolesChecked');
-            var checkboxes = document.querySelectorAll('#tbdRoleList input[type="checkbox"]:not(#allRolesChecked)');
+        function checkAllClick() {
+            toggleAllCheckboxes(document.getElementById('allRolesChecked'), document.querySelectorAll(
+                '#tbdRoleList input[type="checkbox"]:not(#allRolesChecked)'));
 
-            for (var i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = allRolesCheckbox.checked;
-            }
-        }
-
-        function submitFormAction(form, action, method = 'get') {
-            form.action = action;
-            form.setAttribute("method", method);
-            form.submit();
-        }
-
-        function paginateRoles() {
-            document.getElementById('inputRoleFunction').value = document.getElementById('selectRolePaginate').value;
-            document.getElementById('inputRoleFunction').name = "role_paginate";
-            submitFormAction(document.getElementById('formRoleFunction'), "{{ route('admin.roles.list') }}", 'get');
-        }
-
-        function deleteRoles() {
-            var tbody = document.getElementById('tbdRoleList');
-            var checkboxes = tbody.querySelectorAll('input[type="checkbox"]');
-            var values = [];
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    values.push(checkboxes[i].value);
-                }
-            }
-
-            if (values.length != 0) {
-                document.getElementById('inputRoleFunction').value = values.join(',');
-                document.getElementById('inputRoleFunction').name = "role_ids";
-                submitFormAction(document.getElementById('formRoleFunction'), "{{ route('admin.roles.destroy') }}",
-                    'post');
-            } else {
-                alert('null values');
-            }
-        }
-
-        function showIcon(box, icon) {
-            box.innerHTML = icon.value;
         }
 
         function showRole(action, roleCode, roleName, roleIcon, permissions) {
@@ -397,7 +358,7 @@
                 deleteButton.setAttribute('type', 'button');
                 deleteButton.classList.add('btn', 'btn-sm', 'btn-outline-danger');
                 deleteButton.addEventListener('click', function() {
-                    deletePermission(this);
+                    deleteTrTable(this);
                 });
                 var deleteIcon = document.createElement('i');
                 deleteIcon.classList.add('fa-solid', 'fa-trash-can');
@@ -448,7 +409,7 @@
             var deleteButton = document.createElement('button');
             deleteButton.setAttribute('type', 'button');
             deleteButton.setAttribute('class', 'btn btn-sm btn-outline-danger');
-            deleteButton.addEventListener('click', deletePermission);
+            deleteButton.addEventListener('click', deleteTrTable);
 
             var deleteIcon = document.createElement('i');
             deleteIcon.setAttribute('class', 'fa-solid fa-trash-can');
@@ -463,12 +424,6 @@
             tbody.appendChild(tr);
         }
 
-
-        function deletePermission() {
-            var row = event.target.closest('tr');
-            row.remove();
-        }
-
         function btnUpdateRoleClick() {
             getSelectValues(document.querySelectorAll('#tbdTablePermission select'), document.getElementById(
                 'inputRolePermissions'));
@@ -477,25 +432,5 @@
 
             document.getElementById('formShowRole').submit();
         };
-
-
-        function getSelectValues(selects, input) {
-            // Mảng để lưu trữ giá trị các lựa chọn
-            var selectValues = [];
-
-            // Lặp qua từng phần tử select và lấy giá trị
-            selects.forEach(function(select) {
-                var value = select.value;
-
-                // Kiểm tra giá trị đã tồn tại trong mảng selectValues chưa
-                if (!selectValues.includes(value)) {
-                    // Thêm giá trị vào mảng selectValues nếu chưa tồn tại
-                    selectValues.push(value);
-                }
-            });
-
-            // Gán giá trị selectValues vào trường input
-            input.value = selectValues.join(', ');
-        }
     </script>
 @endsection

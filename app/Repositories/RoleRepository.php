@@ -33,7 +33,6 @@ class RoleRepository
         return Role::create($params);
     }
 
-
     public function update($params, $id)
     {
         $role = Role::find($id);
@@ -48,25 +47,25 @@ class RoleRepository
                 ->pluck('permission_code')
                 ->toArray();
 
-            $role->permissions()->detach($permissionCode);
+            if (!empty($permissionCode)) {
+                $role->permissions()->detach($permissionCode);
+            }
         } else {
             $role->permissions()->detach();
         }
 
         if (!empty($params['permission_code_new'])) {
-            $permissionCodeNew = array_unique(
+            $permissionCodeNew = array_map('trim', array_unique(
                 isset($permissionCode)
                     ? array_diff(explode(',', $params['permission_code_new']), explode(',', $params['permission_code']))
                     : explode(',', $params['permission_code_new'])
-            );
+            ));
 
             $role->permissions()->attach($permissionCodeNew);
         }
 
         return $role->update($params);
     }
-
-
 
     public function destroy($params)
     {
