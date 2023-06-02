@@ -13,7 +13,7 @@ class RoleRepository
             if (!empty($params['search_role']))
                 $query->where('role_name', 'like', '%' . $params['search_role'] . '%')
                     ->orWhere('role_code', 'like', '%' . $params['search_role'] . '%');
-        })->paginate(2);
+        })->paginate(5);
         return $roles;
     }
 

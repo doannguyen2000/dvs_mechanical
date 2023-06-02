@@ -24,7 +24,7 @@
                                 class="fa-solid fa-user-shield"></i></span>&nbsp;Roles</a>
                     <a class="btn border nav-link text-start {{ strpos(Route::currentRouteName(), 'admin.permissions') !== false ? ' btn-outline-primary  active' : '' }}"
                         href="{{ route('admin.permissions.list') }}"><span><i
-                                class="fa-solid fa-user-shield"></i></span>&nbsp;Permissions</a>
+                                class="fa-solid fa-list-check"></i></span>&nbsp;Permissions</a>
                     <a class="btn border nav-link text-start {{ strpos(Route::currentRouteName(), 'admin.categories') !== false ? ' btn-outline-primary  active' : '' }}"
                         href="{{ route('admin.categories.list') }}"><span><i
                                 class="fa-solid fa-tags"></i></span>&nbsp;Categories</a>
