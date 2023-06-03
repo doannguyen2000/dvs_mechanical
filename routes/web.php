@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('categories')->group(function () {
             Route::get('',  [CategoryController::class, 'index'])->name('admin.categories.list');
             Route::post('', [CategoryController::class, 'store'])->name('admin.categories.store');
-            Route::delete('', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+            Route::post('delete', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
             Route::post('{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
         });
     });
