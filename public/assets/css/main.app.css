@@ -20,8 +20,7 @@ body,
     }
 
     #nav-search,
-    #search-roles,
-    #search-status {
+    .span-text-new-item {
         display: none !important;
     }
 }
