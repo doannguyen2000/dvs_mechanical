@@ -29,7 +29,7 @@ class RoleController extends Controller
             $params = $request->validated();
             return view('pages.admin.roles.role-list', ['roles' => $this->roleRepository->getAll($params), 'permissions' => $this->permissionRepository->getAll(['permission_paginate' => '0'])]);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('roleFalse', 'Created new role False');
+            return redirect()->back()->with('error', 'Created new role False');
         }
     }
 
@@ -39,10 +39,10 @@ class RoleController extends Controller
             $params = $request->validated();
             $this->roleRepository->create($params);
             DB::commit();
-            return redirect()->route('admin.roles.list')->with('roleSuccess', 'Created new role success');
+            return redirect()->route('admin.roles.list')->with('success', 'Created new role success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('roleFalse', 'Created new role False');
+            return redirect()->back()->with('error', 'Created new role False');
         }
     }
 
@@ -52,19 +52,19 @@ class RoleController extends Controller
             $params = $request->validated();
             $message = $this->roleRepository->update($params, $id);
             DB::commit();
-            if (!$message) return redirect()->back()->with('roleFalse', 'Role not foul!');
-            return redirect()->route('admin.roles.list')->with('roleSuccess', 'Updated new role success');
+            if (!$message) return redirect()->back()->with('error', 'Role not foul!');
+            return redirect()->route('admin.roles.list')->with('success', 'Updated new role success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('roleFalse', 'Updated new role False');
+            return redirect()->back()->with('error', 'Updated new role False');
         }
     }
 
     public function destroy(Request $request)
     {
         try {
-            $validator = Validator::make(['role_ids' => explode(',', $request->input('role_ids'))], [
-                'role_ids.*' => ['required', Rule::exists('roles', 'id')],
+            $validator = Validator::make(['item_ids' => explode(',', $request->input('item_ids'))], [
+                'item_ids.*' => ['required', Rule::exists('roles', 'id')],
             ]);
 
             if ($validator->fails()) {
@@ -75,12 +75,12 @@ class RoleController extends Controller
             }
 
             $params = $validator->validated();
-            $this->roleRepository->destroy($params['role_ids']);
+            $this->roleRepository->destroy($params['item_ids']);
             DB::commit();
-            return redirect()->route('admin.roles.list')->with('roleSuccess', 'Delete role success');
+            return redirect()->route('admin.roles.list')->with('success', 'Delete role success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('roleFalse', 'Delete role False');
+            return redirect()->back()->with('error', 'Delete role False');
         }
     }
 }

@@ -12,11 +12,19 @@ body,
     display: block;
 }
 
+#closeSidebar {
+    display: none;
+}
+
 @media screen and (max-width: 991px) {
     #sidebar {
         width: 0;
         border: none !important;
         padding: 0;
+    }
+
+    #closeSidebar {
+        display: block;
     }
 
     #nav-search,

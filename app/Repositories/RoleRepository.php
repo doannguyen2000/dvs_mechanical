@@ -10,14 +10,14 @@ class RoleRepository
     public function getAll($params)
     {
         $roles = Role::with('permissions')->where(function ($query) use ($params) {
-            if (!empty($params['role_search']))
-                $query->where('role_name', 'like', '%' . $params['role_search'] . '%')
-                    ->orWhere('role_code', 'like', '%' . $params['role_search'] . '%');
+            if (!empty($params['search']))
+                $query->where('role_name', 'like', '%' . $params['search'] . '%')
+                    ->orWhere('role_code', 'like', '%' . $params['search'] . '%');
         });
-        if (isset($params['role_paginate']) && $params['role_paginate'] === '0') {
+        if (isset($params['paginate']) && $params['paginate'] === 0) {
             return $roles->get();
         } else {
-            return $roles->paginate((isset($params['role_paginate']) ? $params['role_paginate'] : 5));
+            return $roles->paginate((isset($params['paginate']) ? $params['paginate'] : 5));
         }
         return $roles;
     }

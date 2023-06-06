@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('password');
             $table->date('date_of_birth')->nullable();
             $table->string('avatar')->nullable();
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
             $table->boolean('is_online')->default(false);
             $table->timestamp('last_online_at')->nullable();
             $table->string('role_code')->nullable();

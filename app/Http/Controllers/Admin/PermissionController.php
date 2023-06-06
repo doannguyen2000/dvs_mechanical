@@ -27,7 +27,7 @@ class PermissionController extends Controller
             $params = $request->validated();
             return view('pages.admin.permissions.permission-list', ['permissions' => $this->permissionRepository->getAll($params)]);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('permissionFalse', 'Created new permission False');
+            return redirect()->back()->with('error', 'Created new permission False');
         }
     }
 
@@ -37,10 +37,10 @@ class PermissionController extends Controller
             $params = $request->validated();
             $this->permissionRepository->create($params);
             DB::commit();
-            return redirect()->route('admin.permissions.list')->with('permissionSuccess', 'Created new permission success');
+            return redirect()->route('admin.permissions.list')->with('success', 'Created new permission success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('permissionFalse', 'Created new permission False');
+            return redirect()->back()->with('error', 'Created new permission False');
         }
     }
 
@@ -50,19 +50,19 @@ class PermissionController extends Controller
             $params = $request->validated();
             $message = $this->permissionRepository->update($params, $id);
             DB::commit();
-            if (!$message) return redirect()->back()->with('permissionFalse', 'permission not foul!');
-            return redirect()->route('admin.permissions.list')->with('permissionSuccess', 'Updated new permission success');
+            if (!$message) return redirect()->back()->with('error', 'permission not foul!');
+            return redirect()->route('admin.permissions.list')->with('success', 'Updated new permission success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('permissionFalse', 'Updated new permission False');
+            return redirect()->back()->with('error', 'Updated new permission False');
         }
     }
 
     public function destroy(Request $request)
     {
         try {
-            $validator = Validator::make(['permission_ids' => explode(',', $request->input('permission_ids'))], [
-                'permission_ids.*' => ['required', Rule::exists('permissions', 'id')],
+            $validator = Validator::make(['item_ids' => explode(',', $request->input('item_ids'))], [
+                'item_ids.*' => ['required', Rule::exists('permissions', 'id')],
             ]);
 
             if ($validator->fails()) {
@@ -73,12 +73,12 @@ class PermissionController extends Controller
             }
 
             $params = $validator->validated();
-            $this->permissionRepository->destroy($params['permission_ids']);
+            $this->permissionRepository->destroy($params['item_ids']);
             DB::commit();
-            return redirect()->route('admin.permissions.list')->with('permissionSuccess', 'Delete permission success');
+            return redirect()->route('admin.permissions.list')->with('success', 'Delete permission success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('permissionFalse', 'Delete permission False');
+            return redirect()->back()->with('error', 'Delete permission False');
         }
     }
 }

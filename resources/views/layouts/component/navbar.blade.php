@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar shadow-sm border rounded navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <a class="navbar-brand">DVS</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
@@ -16,7 +16,7 @@
                 <div class="dropdown">
                     <button class="btn border dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false" style="min-width: 136px;">
-                        <span><img src="{{ asset('assets/images/adminAvatar.jpg') }}" style="height: 25px;width: 25px;"
+                        <span><img  src="@if (!empty(Auth::user()->avatar)) {{ asset(Storage::url('users/' . Auth::user()->avatar)) }}@else{{ asset('assets/images/adminAvatar.jpg') }} @endif" style="height: 25px;width: 25px;"
                                 class="border rounded-5" alt="..."></span>&nbsp;{{ Auth::user()->name }}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-sm-start">

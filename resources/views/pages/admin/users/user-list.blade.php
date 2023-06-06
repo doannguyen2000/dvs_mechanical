@@ -8,70 +8,31 @@
                 <hr>
                 <div class="container-fluid">
                     <div class="d-flex justify-content-between">
-                        <form action="">
-                            <div class="row border">
-                                <div class="col">
-                                    <div class="w-auto input-group">
-                                        <input type="text" class="border form-control-sm" style="width: 70%"
-                                            placeholder="Recipient's username" aria-describedby="button-addon2">
-                                        <button class="btn btn-sm border btn-outline-secondary" style="width: 30%"
-                                            type="button" id="button-addon2"><i
-                                                class="fa-solid fa-magnifying-glass"></i></button>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <select id="search-categoriess" class="form-select-sm"
-                                        aria-label=".form-select-sm example">
-                                        <option selected>All</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
-                                    </select>
-                                    <select id="search-status" class="form-select-sm" aria-label=".form-select-sm example">
-                                        <option selected>All</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </form>
-
+                        <x-search-filter-component :form-action="route('admin.users.list')" :form-method="'GET'" :form-id="'formFilterUsers'">
+                            <x-slot name="selectGroupSearch">
+                                <x-select-component :select-name="'select_filter_role'" :datas="$roles" :data-keys="['role_code', 'role_name']"
+                                    :form-id="'formFilterUsers'" />
+                                <x-select-component :select-name="'select_filter_is_online'" :datas="[['on', 'Online'], ['off', 'Offline']]" :form-id="'formFilterUsers'" />
+                            </x-slot>
+                        </x-search-filter-component>
                         <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#createNewUserModal" type="button"><span><i
-                                    class="fa-solid fa-user-plus"></i></span><span class="span-text-new-item ml-3">{{ __('New account') }}</span></button>
+                            data-bs-target="#createItemInformationModal" type="button"><span><i
+                                    class="fa-solid fa-user-plus"></i></span><span
+                                class="span-text-new-item ml-3">{{ __('New account') }}</span></button>
                     </div>
                 </div>
                 <hr>
 
-                <x-table-component :array-column-name="['category_code', 'category_name']" :array-column="['category_code', 'category_name']" :datas="$categories" :route-list="route('admin.categories.showUser')" :table="['id' => 'tableShowCategories', 'checkboxId' => 'inputCheckBoxCategories']"
-                    :route-delete="[
-                        'formId' => 'formDeleteCategories',
-                        'formAction' => route('admin.categories.destroy'),
-                        'inputId' => 'inputDeleteCategories',
-                    ]">
-
-
-                    <x-slot name="groupItemFunctions">
-                        <span>
-                            <a href="{{ route('admin.users.show', ['id' => 1]) }}"
-                                class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2"
-                                style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)">
-                                <i class="fa-solid fa-chalkboard-user"></i>
-                            </a>
-                        </span>
-                        &nbsp;
-                        <span>
-                            <a href="#"
-                                class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2"
-                                style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)">
-                                <i class="fa-solid fa-user-large-slash" style="color: #e43307;"></i>
-                            </a>
-                        </span>
-                    </x-slot>
-
-                </x-table-component>
-
+                @isset($users)
+                    <x-table-component :array-column-img="['avatar']" :array-column-name="['Avatar', 'Name', 'Status', 'role']" :array-column="['name', 'is_online']" :datas="$users"
+                        :route-list-name="'admin.users.list'" :table="['id' => 'tableShowUsers', 'checkboxId' => 'inputCheckBoxUsers']" :route-delete="[
+                            'formId' => 'formDeleteUsers',
+                            'routeDeleteName' => 'admin.users.destroy',
+                            'inputId' => 'inputDeleteUsers',
+                        ]" :array-with="[['withName' => 'role', 'withColumn' => ['role_icon', 'role_name']]]" :array-functions="['showInforNewPage', 'delete', 'updateRole']"
+                        :route-show-name="'admin.users.show'" :data-others="['roles' => $roles]">
+                    </x-table-component>
+                @endisset
             </div>
 
         </div>
@@ -79,48 +40,8 @@
 @endsection
 
 @section('modal')
-    <div class="modal fade" id="createNewUserModal" tabindex="-1" aria-labelledby="createNewUserModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content  bg-dark-subtle">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="createNewUserModalLabel">New user</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="row mb-3">
-                            <label for="username" class="col-sm-3 col-form-label">Username</label>
-                            <div class="col-sm-9">
-                                <input type="text" value="{{ old('name') }}" class="form-control" id="username"
-                                    name="name" placeholder="Emter username">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="email" class="col-sm-3 col-form-label">Email</label>
-                            <div class="col-sm-9">
-                                <input type="email" value="{{ old('email') }}" class="form-control" id="email"
-                                    name="email" placeholder="Emter email">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="password" class="col-sm-3 col-form-label">Password</label>
-                            <div class="col-sm-9">
-                                <input type="password" value="{{ old('password') }}" class="form-control" id="password"
-                                    name="password" placeholder="Emter password">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="comfirm-password" class="col-sm-3 col-form-label">Re Password</label>
-                            <div class="col-sm-9">
-                                <input type="password" class="form-control" id="comfirm-password" name="comfirm_password"
-                                    placeholder="Comfirm username">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Create user</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <x-modal-item-component id="modelItemCreate" :model-id="'createItemInformationModal'" :model-title="'New user'" :array-column="['name', 'email', 'password', 'password_confirmation']"
+        :form="['type' => 'create', 'action' => 'admin.users.store', 'method' => 'POST']" />
+    <x-modal-item-component id="modelItemShow" :model-id="'showItemInformationModal'" :model-title="'Show user'" :array-with="[['withName' => 'role', 'withColumn' => 'role_name']]" :array-column="['full_name', 'name', 'email', 'address', 'sex', 'date_of_birth']"
+        :form="['type' => 'show2', 'action' => 'admin.users.store', 'method' => 'GET']" :modal-size="'modal-lg'" />
 @endsection

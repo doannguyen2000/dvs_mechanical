@@ -25,8 +25,8 @@ class IndexPermissionRequest extends FormRequest
     public function rules()
     {
         return [
-            'permission_search' => ['nullable', 'string', 'max:30'],
-            'permission_paginate' => ['nullable', Rule::in(['5', '10', '20', '50', '100' , '0'])]
+            'search' => ['nullable', 'string', 'max:30'],
+            'paginate' => ['nullable', Rule::in(['5', '10', '20', '50', '100' , '0'])]
         ];
     }
 }

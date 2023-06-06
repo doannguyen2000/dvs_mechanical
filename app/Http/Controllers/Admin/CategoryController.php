@@ -62,8 +62,8 @@ class CategoryController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $validator = Validator::make(['category_ids' => explode(',', $request->input('category_ids'))], [
-                'category_ids.*' => ['required', Rule::exists('categories', 'id')],
+            $validator = Validator::make(['item_ids' => explode(',', $request->input('item_ids'))], [
+                'item_ids.*' => ['required', Rule::exists('categories', 'id')],
             ]);
 
             if ($validator->fails()) {
@@ -74,7 +74,7 @@ class CategoryController extends Controller
             }
 
             $params = $validator->validated();
-            $this->categoryRepository->destroy($params['category_ids']);
+            $this->categoryRepository->destroy($params['item_ids']);
             DB::commit();
             return redirect()->route('admin.categories.list')->with('categorySuccess', 'Delete category success');
         } catch (\Throwable $th) {
