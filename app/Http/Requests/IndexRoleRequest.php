@@ -25,8 +25,8 @@ class IndexRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'role_search' => ['nullable', 'string', 'max:30'],
-            'role_paginate' => ['nullable', Rule::in(['5', '10', '20', '50', '100' , '0'])]
+            'search' => ['nullable', 'string', 'max:30'],
+            'paginate' => ['nullable', Rule::in(['5', '10', '20', '50', '100', '0'])]
         ];
     }
 }

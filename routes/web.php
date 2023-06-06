@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -40,22 +42,26 @@ Route::middleware(['auth'])->group(function () {
             })->name('admin.users.show');
         });
 
+        Route::prefix('users')->group(function () {
+            Route::get('',  [UserController::class, 'index'])->name('admin.users.list');
+            Route::get('{id}',  [UserController::class, 'show'])->name('admin.users.show');
+            Route::post('', [UserController::class, 'store'])->name('admin.users.store');
+            Route::post('delete', [UserController::class, 'destroy'])->name('admin.users.destroy');
+            Route::post('{id}', [UserController::class, 'update'])->name('admin.users.update');
+            Route::post('update-role-user/{id}', [UserController::class, 'updateRoleUser'])->name('admin.users.updateRoleUser');
+        });
+
         Route::prefix('products')->group(function () {
-            Route::get('', function () {
-                return view('pages.admin.products.product-list');
-            })->name('admin.products.list');
-            Route::get('{id}', function ($id) {
-                return view('pages.admin.products.product-show');
-            })->name('admin.products.show');
-            Route::get('new', function () {
-                return view('pages.admin.products.product-new');
-            })->name('admin.products.new');
+            Route::get('',  [ProductController::class, 'index'])->name('admin.products.list');
+            Route::post('', [ProductController::class, 'store'])->name('admin.products.store');
+            Route::post('delete', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+            Route::post('{id}', [ProductController::class, 'update'])->name('admin.products.update');
         });
 
         Route::prefix('roles')->group(function () {
             Route::get('',  [RoleController::class, 'index'])->name('admin.roles.list');
             Route::post('', [RoleController::class, 'store'])->name('admin.roles.store');
-            Route::post('delete}', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
+            Route::post('delete', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
             Route::post('{id}', [RoleController::class, 'update'])->name('admin.roles.update');
         });
 

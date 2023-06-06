@@ -24,6 +24,8 @@ class User extends Authenticatable
         'password',
         'date_of_birth',
         'avatar',
+        'address',
+        'phone',
         'is_online',
         'last_online_at',
         'role_code',

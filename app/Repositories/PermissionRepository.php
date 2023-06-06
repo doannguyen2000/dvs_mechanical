@@ -9,16 +9,15 @@ class PermissionRepository
     public function getAll($params)
     {
         $permissions = Permission::where(function ($query) use ($params) {
-            if (!empty($params['permission_search']))
-                $query->where('permission_name', 'like', '%' . $params['permission_search'] . '%')
-                    ->orWhere('permission_code', 'like', '%' . $params['permission_search'] . '%');
+            if (!empty($params['search']))
+                $query->where('permission_name', 'like', '%' . $params['search'] . '%')
+                    ->orWhere('permission_code', 'like', '%' . $params['search'] . '%');
         });
-        if (isset($params['permission_paginate']) && $params['permission_paginate'] === '0') {
+        if (isset($params['paginate']) && $params['paginate'] === '0') {
             return $permissions->get();
         } else {
-            return $permissions->paginate((isset($params['permission_paginate']) ? $params['permission_paginate'] : 5));
+            return $permissions->paginate((isset($params['paginate']) ? $params['paginate'] : 5));
         }
-        return $permissions;
     }
 
     public function getById($id)

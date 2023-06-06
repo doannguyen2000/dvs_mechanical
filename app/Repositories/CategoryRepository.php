@@ -9,11 +9,15 @@ class CategoryRepository
     public function getAll($params)
     {
         $categories = Category::where(function ($query) use ($params) {
-            if (!empty($params['search_category']))
-                $query->where('category_name', 'like', '%' . $params['search_category'] . '%')
-                    ->orWhere('category_code', 'like', '%' . $params['search_category'] . '%');
-        })->paginate(5);
-        return $categories;
+            if (!empty($params['search']))
+                $query->where('category_name', 'like', '%' . $params['search'] . '%')
+                    ->orWhere('category_code', 'like', '%' . $params['search'] . '%');
+        });
+        if (isset($params['paginate']) && $params['permission_paginate'] === '0') {
+            return $categories->get();
+        } else {
+            return $categories->paginate((isset($params['permission_paginate']) ? $params['paginate'] : 5));
+        }
     }
 
     public function getById($id)

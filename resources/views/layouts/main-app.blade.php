@@ -28,17 +28,48 @@
                 @include('layouts.component.sidebar')
             @endauth
 
-            <div class="col border" id="navbar">
+            <div class="col" id="navbar">
                 @include('layouts.component.navbar')
                 @yield('content')
             </div>
         </div>
     </div>
-    <script src="{{ asset('fontawesome-free-6.4.0-web/js/all.js') }}"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main.app.js') }}"></script>
+    @if (session('success'))
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="liveToast" class="toast align-items-center border border-success border-3 bg-success"
+                role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ session('success') }}
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if ($errors->any() || session('error'))
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="liveToast" class="toast align-items-center border border-danger border-3 bg-danger" role="alert"
+                aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ $errors->first() ?? session('error') }}
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    @endif
     @yield('modal')
     @yield('toast')
+
+    <script src="{{ asset('fontawesome-free-6.4.0-web/js/all.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery-3.7.0.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/js/main.app.js') }}"></script>
+
     @yield('style-js')
 </body>
 

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class IndexCategoryRequest extends FormRequest
+class UpdateRoleUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,7 @@ class IndexCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'search' => ['nullable', 'string', 'max:30'],
-            'paginate' => ['nullable', Rule::in(['5', '10', '20', '50', '100', '0'])]
+            'role_code' => ['nullable', Rule::exists('roles', 'role_code')]
         ];
     }
 }
