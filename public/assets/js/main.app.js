@@ -1,3 +1,23 @@
+let logoutTimer;
+
+function startLogoutTimer() {
+    // Đặt thời gian timeout (theo giây) tại đây
+    const timeoutSeconds = 600; // 10 phút
+
+    // Hủy bỏ bất kỳ bộ đếm logout hiện tại nếu có
+    clearTimeout(logoutTimer);
+
+    // Bắt đầu đếm ngược đến đăng xuất tự động
+    logoutTimer = setTimeout(logout, timeoutSeconds * 1000);
+}
+
+function logout() {
+    $("#logout-form").submit();
+}
+
+// Bắt đầu đếm ngược khi có hoạt động từ người dùng
+$(document).on("mousemove keydown scroll click", startLogoutTimer);
+
 const toastBootstrap = bootstrap.Toast.getOrCreateInstance(
     document.getElementById("liveToast")
 );
