@@ -1,4 +1,4 @@
-@props(['arrayColumnName', 'arrayColumn', 'datas', 'dataOthers', 'routeDelete' => ['formId', 'routeDeleteName', 'inputId'], 'routeListName', 'table' => ['checkboxId', 'id'], 'arrayFunctions', 'routeShowName', 'arrayColumnImg'])
+@props(['arrayColumnName', 'arrayColumn', 'datas', 'dataOthers', 'routeDelete' => ['formId', 'routeDeleteName', 'inputId'], 'routeListName', 'table' => ['checkboxId', 'id'], 'arrayFunctions', 'routeShowName', 'arrayColumnImg', 'routeUpdateStatus'])
 
 <div class="overflow-y-auto border rounded mb-3" style="height: 36.8vh !important;">
     <table @isset($table) id="{{ $table['id'] }}" @endisset class="table mb-0"
@@ -84,7 +84,7 @@
                                     <span style="display: inline-block;">
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#showItemInformationModal"
                                             class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2"
-                                            onclick="<?php $GLOBALS['myVariable'] = $data; ?>"
+                                            onclick="showItemModel('boxShowItemContent','{{ route('admin.users.show', ['id' => $data->id]) }}');appear()"
                                             style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
@@ -133,7 +133,7 @@
                 <input type="text" name="item_ids" id="{{ $routeDelete['inputId'] }}" hidden>
                 @isset($table['checkboxId'])
                     <button type="button" class="btn btn-sm btn-outline-danger"
-                        onclick="deleteItem('{{ $table['id'] }}', '{{ $table['checkboxId'] }}', '{{ $routeDelete['inputId'] }}', '{{ $routeDelete['formId'] }}');">
+                        onclick="sentItemChecked('{{ $table['id'] }}', '{{ $table['checkboxId'] }}', '{{ $routeDelete['inputId'] }}', '{{ $routeDelete['formId'] }}');">
                         <span><i class="fa-regular fa-trash-can"></i></span>
                     </button>
                 @endisset
@@ -152,6 +152,27 @@
                 @endforeach
             </ul>
         </div>
+        @if (!empty($routeUpdateStatus))
+            <form id="{{ $routeUpdateStatus['formId'] }}" action="{{ route($routeUpdateStatus['routeDeleteName']) }}"
+                method="POST" style=" display: inline-block;" class="w-auto btn-group" role="group">
+                @csrf
+                <input type="text" name="item_ids" id="{{ $routeUpdateStatus['inputIdsId'] }}" hidden>
+                <input type="text" name="status" id="{{ $routeUpdateStatus['inputStatusId'] }}" hidden>
+                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle rounded"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ __('status') }}
+                </button>
+                <ul class="dropdown-menu overflow-y-auto" style="min-height: 50px;">
+                    @foreach ($routeUpdateStatus['arrayData'] as $text => $value)
+                        <li>
+                            <button type="button"
+                                onclick="updateInputValue('{{ $routeUpdateStatus['inputStatusId'] }}','{{ $value }}');sentItemChecked('{{ $table['id'] }}', '{{ $table['checkboxId'] }}', '{{ $routeUpdateStatus['inputIdsId'] }}', '{{ $routeUpdateStatus['formId'] }}');"
+                                class="dropdown-item">{{ $text }}</button>
+                        </li>
+                    @endforeach
+                </ul>
+            </form>
+        @endif
     </div>
     @if (Request::get('paginate') !== '0')
         <div class="btn-group" role="group" aria-label="First group">
@@ -162,7 +183,8 @@
                     class="btn btn-sm btn-outline-secondary @if (Request::get('page') == $key || (empty(Request::get('page')) && $key === 1)) active @endif"
                     href="{{ $link }}">{{ $key }}</a>
             @endforeach
-            <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ $datas->nextPageUrl() }}">&raquo;</a>
+            <a type="button" class="btn btn-sm btn-outline-secondary"
+                href="{{ $datas->nextPageUrl() }}">&raquo;</a>
         </div>
     @endif
 </div>

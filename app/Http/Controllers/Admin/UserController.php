@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\DestroyUserRequest;
 use App\Http\Requests\IndexUserRequest;
+use App\Http\Requests\ShowUserRequest;
 use App\Http\Requests\UpdateRoleUserRequest;
+use App\Http\Requests\updateStatusUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
@@ -47,10 +50,11 @@ class UserController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(ShowUserRequest $request, $id)
     {
         try {
-            return view('pages.admin.users.user-show', ['user' => $this->userRepository->getById($id)]);
+            $params = $request->validated();
+            return view('pages.admin.users.user-show', ['user' => $this->userRepository->getById($id), 'showModal' => $params['show_modal'] ?? false]);
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Created new user False');
         }
@@ -58,32 +62,21 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, $id)
     {
-
+        try {
             $params = $request->validated();
             $this->userRepository->update($params, $id);
             DB::commit();
             return redirect()->back()->with('success', 'Created new user success');
-      try {  } catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Created new user False');
         }
     }
 
-    public function destroy(Request $request)
+    public function destroy(DestroyUserRequest $request)
     {
         try {
-            $validator = Validator::make(['item_ids' => explode(',', $request->input('item_ids'))], [
-                'item_ids.*' => ['required', Rule::exists('users', 'id')],
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $params = $validator->validated();
+            $params = $request->validated();
             $this->userRepository->destroy($params['item_ids']);
             DB::commit();
             return redirect()->back()->with('success', 'Delete user success');
@@ -103,6 +96,19 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Delete user False');
+        }
+    }
+
+    public function updateStatusUser(updateStatusUserRequest $request)
+    {
+        try {
+            $params = $request->validated();
+            $this->userRepository->updateStatusUser($params);
+            DB::commit();
+            return redirect()->back()->with('success', 'Update status user success');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Update status user False');
         }
     }
 }

@@ -24,7 +24,7 @@ const toastBootstrap = bootstrap.Toast.getOrCreateInstance(
 toastBootstrap.show();
 
 // Delete item
-function deleteItem(boxCheckboxId, checkBoxId, inputId, formId) {
+function sentItemChecked(boxCheckboxId, checkBoxId, inputId, formId) {
     var checkboxes = $(
         "#" + boxCheckboxId + " input[type='checkbox']:not(#" + checkBoxId + ")"
     );
@@ -186,4 +186,59 @@ function renderOption(selectID, data, dataSelected = "") {
 
         selectElement.append(option);
     });
+}
+
+function showItemModel(elementId, action, method = "GET") {
+    var spinnerHtml = `
+    <div class="spinner-grow text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-success" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-danger" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-warning" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-info" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow text-dark" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  `;
+    $("#" + elementId).addClass("hidden");
+    $("#" + elementId).html(spinnerHtml);
+    $("#" + elementId).addClass("visible");
+    $.ajax({
+        url: action,
+        data: {
+            show_modal: 1,
+        },
+        type: method,
+        dataType: "html",
+        success: function (response) {
+            $("#" + elementId).addClass("hidden");
+            $("#" + elementId).html(response);
+            $("#" + elementId).addClass("visible");
+            console.log(response);
+        },
+        error: function (xhr, status, error) {
+            console.log(error);
+        },
+    });
+}
+
+//updateInputValue
+
+function updateInputValue(inputId, value) {
+    $("#" + inputId).val(value);
 }

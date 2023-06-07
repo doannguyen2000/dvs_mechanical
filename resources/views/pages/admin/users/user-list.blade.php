@@ -29,8 +29,17 @@
                             'formId' => 'formDeleteUsers',
                             'routeDeleteName' => 'admin.users.destroy',
                             'inputId' => 'inputDeleteUsers',
-                        ]" :array-with="[['withName' => 'role', 'withColumn' => ['role_icon', 'role_name']]]" :array-functions="['showInforNewPage', 'delete', 'updateRole']"
-                        :route-show-name="'admin.users.show'" :data-others="['roles' => $roles]">
+                        ]" :route-update-status="[
+                            'formId' => 'formUpdateStatusUsers',
+                            'routeDeleteName' => 'admin.users.updateStatusUser',
+                            'inputIdsId' => 'inputIdsUpdateUsers',
+                            'inputStatusId' => 'inputStatusUpdateUsers',
+                            'arrayData' => [
+                                'Online' => 1,
+                                'Offline' => 0,
+                            ],
+                        ]" :array-with="[['withName' => 'role', 'withColumn' => ['role_icon', 'role_name']]]"
+                        :array-functions="['showInforModal', 'delete', 'updateRole']" :route-show-name="'admin.users.show'" :data-others="['roles' => $roles]">
                     </x-table-component>
                 @endisset
             </div>
@@ -42,6 +51,13 @@
 @section('modal')
     <x-modal-item-component id="modelItemCreate" :model-id="'createItemInformationModal'" :model-title="'New user'" :array-column="['name', 'email', 'password', 'password_confirmation']"
         :form="['type' => 'create', 'action' => 'admin.users.store', 'method' => 'POST']" />
-    <x-modal-item-component id="modelItemShow" :model-id="'showItemInformationModal'" :model-title="'Show user'" :array-with="[['withName' => 'role', 'withColumn' => 'role_name']]" :array-column="['full_name', 'name', 'email', 'address', 'sex', 'date_of_birth']"
-        :form="['type' => 'show2', 'action' => 'admin.users.store', 'method' => 'GET']" :modal-size="'modal-lg'" />
+    <div class="modal fade" id="showItemInformationModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body hidden" id="boxShowItemContent">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
