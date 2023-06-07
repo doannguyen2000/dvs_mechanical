@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\User\UserController as UserUserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -27,10 +28,12 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'online'])->group(function () {
     Route::get('main', function () {
         return view('layouts.main-app');
     })->name('main');
+
+    Route::get('profile', [UserUserController::class, 'showProfile'])->name('users.profile');
 
     Route::prefix('admin')->group(function () {
         Route::prefix('users')->group(function () {
@@ -47,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('{id}',  [UserController::class, 'show'])->name('admin.users.show');
             Route::post('', [UserController::class, 'store'])->name('admin.users.store');
             Route::post('delete', [UserController::class, 'destroy'])->name('admin.users.destroy');
+            Route::post('update-status-user', [UserController::class, 'updateStatusUser'])->name('admin.users.updateStatusUser');
             Route::post('{id}', [UserController::class, 'update'])->name('admin.users.update');
             Route::post('update-role-user/{id}', [UserController::class, 'updateRoleUser'])->name('admin.users.updateRoleUser');
         });

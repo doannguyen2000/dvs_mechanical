@@ -66,8 +66,13 @@ class UserRepository
         return  $user->update($params);
     }
 
-    public function destroy($params)
+    public function destroy($ids)
     {
-        return User::whereIn('id', $params)->delete();
+        return User::whereIn('id', array_unique(explode(',', $ids)))->delete();
+    }
+
+    public function updateStatusUser($params)
+    {
+        return User::whereIn('id', array_unique(explode(',', $params['item_ids'])))->update(['is_online' => $params['status']]);
     }
 }
