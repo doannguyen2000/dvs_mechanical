@@ -1,6 +1,4 @@
-let logoutTimer;
-
-function startLogoutTimer() {
+function startLogoutTimer(logoutTimer) {
     // Đặt thời gian timeout (theo giây) tại đây
     const timeoutSeconds = 600; // 10 phút
 
@@ -16,12 +14,15 @@ function logout() {
 }
 
 // Bắt đầu đếm ngược khi có hoạt động từ người dùng
-$(document).on("mousemove keydown scroll click", startLogoutTimer);
 
-const toastBootstrap = bootstrap.Toast.getOrCreateInstance(
-    document.getElementById("liveToast")
-);
-toastBootstrap.show();
+$(document).ready(function () {
+    let logoutTimer;
+    $("#liveToast").toast("show");
+    $(document).on(
+        "mousemove keydown scroll click",
+        startLogoutTimer(logoutTimer)
+    );
+});
 
 // Delete item
 function sentItemChecked(boxCheckboxId, checkBoxId, inputId, formId) {
@@ -90,16 +91,6 @@ function submitFormSetInputValues(formDeleteId, inputId, value) {
     $("#" + formDeleteId).submit();
 }
 
-// Event handlers
-$("#" + checkboxAllId).change(function () {
-    toggleAllCheckboxes(checkboxAllId, boxCheckboxId);
-});
-
-$("#" + formId).submit(function (event) {
-    event.preventDefault();
-    submitForm(formId, action, method, inputId, value);
-});
-
 // Show image
 function showImage(imgShow, inputImg) {
     var file = $("#" + inputImg)[0].files[0];
@@ -123,7 +114,6 @@ function getJsonFileAddress(
     wardCode = "",
     fileJson
 ) {
-    console.log(provinceCode + districtCode + wardCode);
     return new Promise(function (resolve, reject) {
         $.ajax({
             url: fileJson,
@@ -177,7 +167,6 @@ function renderOption(selectID, data, dataSelected = "") {
         } else {
             if (dataSelected.indexOf(item.codename) !== -1) {
                 option.prop("selected", true);
-                console.log(dataSelected);
             }
         }
 
@@ -226,10 +215,10 @@ function showItemModel(elementId, action, method = "GET") {
         type: method,
         dataType: "html",
         success: function (response) {
+            // alert(response);
             $("#" + elementId).addClass("hidden");
             $("#" + elementId).html(response);
             $("#" + elementId).addClass("visible");
-            console.log(response);
         },
         error: function (xhr, status, error) {
             console.log(error);
@@ -241,4 +230,34 @@ function showItemModel(elementId, action, method = "GET") {
 
 function updateInputValue(inputId, value) {
     $("#" + inputId).val(value);
+}
+
+// Sự kiện khi checkbox 'all' được chọn/hủy chọn
+
+function CheckCheckBoxAll(parentId) {
+    var isChecked = $("#" + parentId + " .checkbox-all").prop("checked");
+    $("#" + parentId + " .checkbox-item").prop("checked", isChecked);
+}
+
+// Sự kiện khi checkbox 'item' được chọn/hủy chọn
+function CheckCheckBoxItem(parentId) {
+    var allChecked =
+        $("#" + parentId + " .checkbox-item:checked").length ===
+        $("#" + parentId + " .checkbox-item").length;
+    $("#" + parentId + " .checkbox-all").prop("checked", allChecked);
+}
+
+// Sự kiện lấy giá trị checkbox 'item' được chọn
+function getSelectedCheckboxValues(parentId) {
+    var selectedValues = [];
+    $("#" + parentId + " .checkbox-item:checked").each(function () {
+        selectedValues.push($(this).val());
+    });
+    $("#" + parentId + " .input-form-checkbox").val(selectedValues.join(","));
+}
+
+// Sự kiện lấy show modal 'notification' được chọn
+function showModal(modalId, message = null) {
+    $("#" + modalId + " .modal-message").text(message);
+    $("#" + modalId).modal("show");
 }

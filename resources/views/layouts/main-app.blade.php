@@ -67,6 +67,7 @@
 
     <script src="{{ asset('fontawesome-free-6.4.0-web/js/all.js') }}"></script>
     <script src="{{ asset('assets/js/jquery-3.7.0.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/popper.js') }}"></script> --}}
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.app.js') }}"></script>
 
