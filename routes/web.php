@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\TestComponentController;
 use App\Http\Controllers\User\UserController as UserUserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,14 +37,6 @@ Route::middleware(['auth', 'online'])->group(function () {
     Route::get('profile', [UserUserController::class, 'showProfile'])->name('users.profile');
 
     Route::prefix('admin')->group(function () {
-        Route::prefix('users')->group(function () {
-            Route::get('', function () {
-                return view('pages.admin.users.user-list');
-            })->name('admin.users.list');
-            Route::get('{id}', function ($id) {
-                return view('pages.admin.users.user-show');
-            })->name('admin.users.show');
-        });
 
         Route::prefix('users')->group(function () {
             Route::get('',  [UserController::class, 'index'])->name('admin.users.list');

@@ -175,7 +175,6 @@
             function getProvince() {
                 getJsonFileAddress("", "", "", "{{ asset('assets/datas/addrres.json') }}")
                     .then(function(data) {
-                        console.log("Dữ liệu được trả về:", data);
                         renderOption('selectProvince', data,
                             "{{ $user->address }}");
                         if ($('#selectProvince').val() != null) {
@@ -184,7 +183,6 @@
                         }
                     })
                     .catch(function(error) {
-                        console.log("Lỗi trong quá trình yêu cầu Ajax:", error);
                         alert("Lỗi trong quá trình yêu cầu Ajax:", error);
                     });
             }
@@ -193,13 +191,11 @@
                 getJsonFileAddress($('#selectProvince').val(), "", "",
                         "{{ asset('assets/datas/addrres.json') }}")
                     .then(function(data) {
-                        console.log("Dữ liệu được trả về:", data);
                         renderOption('selectDistrict', data,
                             "{{ $user->address }}");
                         getWard();
                     })
                     .catch(function(error) {
-                        console.log("Lỗi trong quá trình yêu cầu Ajax:", error);
                         alert("Lỗi trong quá trình yêu cầu Ajax:", error);
                     });
             }
@@ -208,12 +204,10 @@
                 getJsonFileAddress($('#selectProvince').val(), $('#selectDistrict').val(), "",
                         "{{ asset('assets/datas/addrres.json') }}")
                     .then(function(data) {
-                        console.log("Dữ liệu được trả về:", data);
                         renderOption('selectWard', data,
                             "{{ $user->address }}");
                     })
                     .catch(function(error) {
-                        console.log("Lỗi trong quá trình yêu cầu Ajax:", error);
                         alert("Lỗi trong quá trình yêu cầu Ajax:", error);
                     });
             }
