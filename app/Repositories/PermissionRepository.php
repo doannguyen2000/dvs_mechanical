@@ -22,7 +22,7 @@ class PermissionRepository
 
     public function getById($id)
     {
-        return Permission::find($id);
+        return Permission::with('roles')->find($id);
     }
 
     public function create($params)
@@ -40,8 +40,8 @@ class PermissionRepository
     }
 
 
-    public function destroy($params)
+    public function destroy($ids)
     {
-        return Permission::whereIn('id', $params)->delete();
+        return Permission::whereIn('id', array_unique(explode(',', $ids)))->delete();
     }
 }

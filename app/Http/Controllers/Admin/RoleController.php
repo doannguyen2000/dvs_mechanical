@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRoleRequest;
+use App\Http\Requests\DestroyRoleRequest;
 use App\Http\Requests\IndexRoleRequest;
 use App\Http\Requests\ShowUserRequest;
 use App\Http\Requests\UpdateRolePermissionRequest;
@@ -12,8 +13,6 @@ use App\Repositories\PermissionRepository;
 use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class RoleController extends Controller
 {
@@ -89,21 +88,10 @@ class RoleController extends Controller
         }
     }
 
-    public function destroy(Request $request)
+    public function destroy(DestroyRoleRequest $request)
     {
         try {
-            $validator = Validator::make(['item_ids' => explode(',', $request->input('item_ids'))], [
-                'item_ids.*' => ['required', Rule::exists('roles', 'id')],
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $params = $validator->validated();
+            $params = $request->validated();
             $this->roleRepository->destroy($params['item_ids']);
             DB::commit();
             return redirect()->route('admin.roles.list')->with('success', 'Delete role success');
