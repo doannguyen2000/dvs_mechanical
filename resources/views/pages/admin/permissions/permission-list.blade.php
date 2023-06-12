@@ -134,7 +134,7 @@
                     $('#modalNotification').data('type', 'modalDeleteRole');
                     if ($('#modalNotification').data('type') == "modalDeleteRole") {
                         $('#modalNotification .modal-footer').show();
-                        showModal('modalNotification', 'delete role has id: ' + $("#formListItem" +
+                        showModal('modalNotification', 'delete permission has id: ' + $("#formListItem" +
                             " .input-form-checkbox").val());
                     }
                 } else {
@@ -162,7 +162,7 @@
                 $('#modalNotification').data('type', 'modalDeleteRole');
                 if ($('#modalNotification').data('type') == "modalDeleteRole") {
                     $('#modalNotification .modal-footer').show();
-                    showModal('modalNotification', 'delete role has id: ' + $("#formListItem" +
+                    showModal('modalNotification', 'delete permission has id: ' + $("#formListItem" +
                         " .input-form-checkbox").val());
                 }
             } else {

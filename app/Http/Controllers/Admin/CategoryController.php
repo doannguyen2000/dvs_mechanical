@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\DatabaseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\DestroyCategoryRequest;
 use App\Http\Requests\IndexCategoryRequest;
+use App\Http\Requests\ShowUserRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Repositories\CategoryRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -28,7 +27,17 @@ class CategoryController extends Controller
             $params = $request->validated();
             return view('pages.admin.categories.category-list', ['categories' => $this->categoryRepository->getAll($params), 'tables' => DatabaseHelper::getTables()]);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('categoryFalse', 'Created new category False');
+            return redirect()->back()->with('error', 'Created show list category False');
+        }
+    }
+
+    public function show(ShowUserRequest $request, $id)
+    {
+        try {
+            $params = $request->validated();
+            return view('pages.admin.categories.category-show', ['category' => $this->categoryRepository->getById($id), 'showModal' => $params['show_modal'] ?? false]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Show category False');
         }
     }
 
@@ -38,10 +47,10 @@ class CategoryController extends Controller
             $params = $request->validated();
             $this->categoryRepository->create($params);
             DB::commit();
-            return redirect()->route('admin.categories.list')->with('categorySuccess', 'Created new category success');
+            return redirect()->route('admin.categories.list')->with('success', 'Created new category success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('categoryFalse', 'Created new category False');
+            return redirect()->back()->with('error', 'Created new category False');
         }
     }
 
@@ -51,35 +60,24 @@ class CategoryController extends Controller
             $params = $request->validated();
             $message = $this->categoryRepository->update($params, $id);
             DB::commit();
-            if (!$message) return redirect()->back()->with('categoryFalse', 'category not foul!');
-            return redirect()->route('admin.categories.list')->with('categorySuccess', 'Updated new category success');
+            if (!$message) return redirect()->back()->with('error', 'category not foul!');
+            return redirect()->route('admin.categories.list')->with('success', 'Updated category success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('categoryFalse', 'Updated new category False');
+            return redirect()->back()->with('error', 'Updated category False');
         }
     }
 
-    public function destroy(Request $request)
+    public function destroy(DestroyCategoryRequest $request)
     {
         try {
-            $validator = Validator::make(['item_ids' => explode(',', $request->input('item_ids'))], [
-                'item_ids.*' => ['required', Rule::exists('categories', 'id')],
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $params = $validator->validated();
+            $params = $request->validated();
             $this->categoryRepository->destroy($params['item_ids']);
             DB::commit();
-            return redirect()->route('admin.categories.list')->with('categorySuccess', 'Delete category success');
+            return redirect()->route('admin.categories.list')->with('success', 'Delete category success');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->back()->with('categoryFalse', 'Delete category False');
+            return redirect()->back()->with('error', 'Delete category False');
         }
     }
 }
