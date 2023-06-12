@@ -2,7 +2,7 @@
 
 <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}Label"
     aria-hidden="true">
-    <div class="modal-dialog {{ $modalSize }}">
+    <div class="modal-dialog {{ $modalSize }} modal-dialog-centered">
         <div class="modal-content">
             <form action="{{ route($route['name']) }}" method="{{ $route['method'] }}">
                 @csrf

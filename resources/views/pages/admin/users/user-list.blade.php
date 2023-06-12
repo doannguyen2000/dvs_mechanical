@@ -14,7 +14,7 @@
                 <div class="d-flex justify-content-between">
                     <div>
                         {!! Form::text('search', Request::get('search'), [
-                            'class' => 'form-control form-control-sm',
+                            'class' => 'form-control form-control-sm input-search',
                             'style' => 'width: 190px; display: inline-block;',
                             'placeholder' => 'Search ...',
                         ]) !!}
@@ -24,7 +24,17 @@
                             array_merge(['' => 'All'], $roles->pluck('role_name', 'role_code')->toArray()),
                             Request::get('select_filter_role'),
                             [
-                                'class' => 'form-select form-select-sm w-auto',
+                                'class' => 'form-select form-select-sm w-auto select-search',
+                                'style' => 'display: inline-block;',
+                            ],
+                        ) !!}
+
+                        {!! Form::select(
+                            'select_filter_is_online',
+                            array_merge(['' => 'All'], ['on' => 'Online', 'off' => 'Offline']),
+                            Request::get('select_filter_is_online'),
+                            [
+                                'class' => 'form-select form-select-sm w-auto select-search',
                                 'style' => 'display: inline-block;',
                             ],
                         ) !!}
@@ -48,6 +58,7 @@
                     <x-table-item-show-component :option="[
                         'class' => 'table m-0',
                         'id' => 'tableShowRole',
+                        'style' => 'min-width: 600px;',
                     ]" :values="$users" :value-others="['roles' => $roles]" :has-checkbox-item="true"
                         :item-column="[
                             'tableColumnName' => ['Avatar', 'Username', 'status', 'Role'],
@@ -132,7 +143,11 @@
             });
 
             $('#formListItem .checkbox-item').change(function() {
-                CheckCheckBoxItem('formListItem')
+                CheckCheckBoxItem('formListItem');
+            });
+
+            $('#formListItem .select-search').change(function() {
+                submitForm('formListItem.form-checkbox', '{{ Request::fullUrl() }}', 'get');
             });
 
             $('#btnSearch').click(function() {
@@ -144,7 +159,7 @@
             });
 
             $('#btnDeleteItem').click(function() {
-                getSelectedCheckboxValues('formListItem');
+                getSelectedCheckboxValues('formListItem', 'formListItem .input-form-checkbox');
                 if ($("#formListItem" + " .input-form-checkbox").val() !== '') {
                     $('#modalNotification').data('type', 'modalDeleteRole');
                     if ($('#modalNotification').data('type') == "modalDeleteRole") {

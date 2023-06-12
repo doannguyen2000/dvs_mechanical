@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\RolePermission;
 
@@ -24,7 +25,7 @@ class RoleRepository
 
     public function getById($id)
     {
-        return Role::find($id);
+        return Role::with('permissions')->find($id);
     }
 
     public function create($params)
@@ -33,35 +34,42 @@ class RoleRepository
         return Role::create($params);
     }
 
-    public function update($params, $id)
+    function updateRolePermission($params, $id)
     {
         $role = Role::find($id);
 
         if (!$role) {
-            return false;
+            return 'Role not foul!';
         }
 
-        if (!empty($params['permission_code'])) {
-            $permissionCode = RolePermission::whereNotIn('permission_code', explode(',', $params['permission_code']))
-                ->where('role_code', $role->role_code)
+        if (!empty($params['item_ids'])) {
+            $permissionCode = Permission::whereIn('id', explode(',', $params['item_ids']))
                 ->pluck('permission_code')
                 ->toArray();
 
             if (!empty($permissionCode)) {
                 $role->permissions()->detach($permissionCode);
             }
-        } else {
-            $role->permissions()->detach();
         }
 
-        if (!empty($params['permission_code_new'])) {
-            $permissionCodeNew = array_map('trim', array_unique(
-                isset($permissionCode)
-                    ? array_diff(explode(',', $params['permission_code_new']), explode(',', $params['permission_code']))
-                    : explode(',', $params['permission_code_new'])
-            ));
+        if (!empty($params['item_new_ids'])) {
+            $permissionCodeNew = Permission::whereIn('id', explode(',', $params['item_new_ids']))
+                ->pluck('permission_code')
+                ->toArray();
+            $permissionExist = array_intersect($permissionCodeNew, $role->permissions->pluck('permission_code')->toArray());
+            if (!empty($permissionExist)) return implode(',', $permissionExist) . ' already exist in the ' . $role->role_name;
+            $role->permissions()->attach(array_map('trim', $permissionCodeNew));
+        }
 
-            $role->permissions()->attach($permissionCodeNew);
+        return;
+    }
+
+    public function update($params, $id)
+    {
+        $role = Role::find($id);
+
+        if (!$role) {
+            return false;
         }
 
         return $role->update($params);

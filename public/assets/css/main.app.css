@@ -27,6 +27,10 @@ body,
 }
 
 @media screen and (max-width: 991px) {
+    body {
+        font-size: 80% !important;
+    }
+
     #sidebar {
         width: 0;
         border: none !important;
@@ -40,5 +44,9 @@ body,
     #nav-search,
     .span-text-new-item {
         display: none !important;
+    }
+
+    #formListItem .input-search {
+        width: 110px !important;
     }
 }

@@ -57,9 +57,11 @@ Route::middleware(['auth', 'online'])->group(function () {
 
         Route::prefix('roles')->group(function () {
             Route::get('',  [RoleController::class, 'index'])->name('admin.roles.list');
+            Route::get('{id}',  [RoleController::class, 'show'])->name('admin.roles.show');
             Route::post('', [RoleController::class, 'store'])->name('admin.roles.store');
             Route::post('delete', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
             Route::post('{id}', [RoleController::class, 'update'])->name('admin.roles.update');
+            Route::post('update-role-permission/{id}', [RoleController::class, 'updateRolePermission'])->name('admin.roles.updateRolePermission');
         });
 
         Route::prefix('permissions')->group(function () {

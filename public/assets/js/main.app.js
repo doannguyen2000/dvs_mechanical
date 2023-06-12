@@ -248,16 +248,35 @@ function CheckCheckBoxItem(parentId) {
 }
 
 // Sự kiện lấy giá trị checkbox 'item' được chọn
-function getSelectedCheckboxValues(parentId) {
+function getSelectedCheckboxValues(parentId, inputId) {
     var selectedValues = [];
     $("#" + parentId + " .checkbox-item:checked").each(function () {
         selectedValues.push($(this).val());
     });
-    $("#" + parentId + " .input-form-checkbox").val(selectedValues.join(","));
+    $("#" + inputId).val(selectedValues.join(","));
 }
 
 // Sự kiện lấy show modal 'notification' được chọn
 function showModal(modalId, message = null) {
     $("#" + modalId + " .modal-message").text(message);
     $("#" + modalId).modal("show");
+}
+
+//Hàm lấy mảng address theo chuỗi mã
+
+function extractArrayFromString(str) {
+    // Chia chuỗi thành mảng các phần tử dựa trên dấu gạch dưới và gạch ngang
+    var arr = str.split("_").map(function (item) {
+        // Chuyển đổi chữ hoa đầu tiên và các chữ cái còn lại thành chữ thường
+        var words = item.split("-").map(function (word) {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        });
+        // Ghép các từ lại thành chuỗi và trả về
+        return words.join(" ");
+    });
+
+    // Đảo ngược mảng để có thứ tự đúng
+    arr.reverse();
+
+    return arr;
 }

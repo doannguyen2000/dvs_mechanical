@@ -57,22 +57,23 @@
                                         @php
                                             if (!empty($user->full_name)) {
                                                 $parts = explode(' ', $user->full_name);
-                                                $lastElement = array_pop($parts);
-                                                $remainingString = implode(' ', $parts);
+                                                $firstname = end($parts);
+                                                array_pop($parts); // Loại bỏ phần tử cuối cùng trong mảng
+                                                $lastElement = implode(' ', $parts);
                                             }
                                         @endphp
                                         <div class="col-sm-6">
                                             <label for="inputFirstName" class="form-label">{{ __('First name') }}</label>
                                             <input type="text"
                                                 class="form-control @if ($showModal) bg-primary-subtle border border-primary @endif"
-                                                id="inputFirstName" value="{{ $lastElement ?? '' }}" name="first_name"
+                                                id="inputFirstName" value="{{ $firstname ?? '' }}" name="first_name"
                                                 @if ($showModal) disabled @endif>
                                         </div>
                                         <div class="col-sm-6">
                                             <label for="inputLastName" class="form-label">{{ __('Last name') }}</label>
                                             <input type="text"
                                                 class="form-control @if ($showModal) bg-primary-subtle border border-primary @endif"
-                                                id="inputLastName" value="{{ $remainingString ?? '' }}" name="last_name"
+                                                id="inputLastName" value="{{ $lastElement ?? '' }}" name="last_name"
                                                 @if ($showModal) disabled @endif>
                                         </div>
                                         <div class="col-sm-6">
