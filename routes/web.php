@@ -66,6 +66,7 @@ Route::middleware(['auth', 'online'])->group(function () {
 
         Route::prefix('permissions')->group(function () {
             Route::get('',  [PermissionController::class, 'index'])->name('admin.permissions.list');
+            Route::get('{id}',  [PermissionController::class, 'show'])->name('admin.permissions.show');
             Route::post('', [PermissionController::class, 'store'])->name('admin.permissions.store');
             Route::post('delete', [PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
             Route::post('{id}', [PermissionController::class, 'update'])->name('admin.permissions.update');

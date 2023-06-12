@@ -75,8 +75,8 @@ class RoleRepository
         return $role->update($params);
     }
 
-    public function destroy($params)
+    public function destroy($ids)
     {
-        return Role::whereIn('id', $params)->delete();
+        return Role::whereIn('id', array_unique(explode(',', $ids)))->delete();
     }
 }

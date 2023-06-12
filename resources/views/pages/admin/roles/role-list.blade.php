@@ -150,7 +150,7 @@
             $('#buttonYes').click(function() {
                 if ($('#modalNotification').data('type') == "modalDeleteRole") {
                     submitForm('formListItem.form-checkbox',
-                        '{{ route('admin.users.destroy') }}',
+                        '{{ route('admin.roles.destroy') }}',
                         'post');
                 }
             });
