@@ -53,7 +53,7 @@ class UserRepository
             $params['avatar'] = $fileName;
         }
         $params['address'] = $params['ward'] . "-" . $params['district'] . "-" . $params['province'];
-        $params['full_name'] = $params['first_name'] . ' ' . $params['last_name'];
+        $params['full_name'] = $params['last_name'] . ' ' . $params['first_name'];
 
         return  $user->update($params);
     }

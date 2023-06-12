@@ -21,8 +21,6 @@ class UpdateRoleRequest extends FormRequest
         return [
             'role_name' => ['required', 'string', 'max:20', Rule::unique('roles', 'role_name')->ignore(request()->id)],
             'role_icon' => ['required', 'string'],
-            'permission_code' => ['nullable'],
-            'permission_code_new' => ['nullable'],
         ];
     }
 }

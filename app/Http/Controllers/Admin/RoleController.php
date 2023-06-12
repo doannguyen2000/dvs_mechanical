@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateRoleRequest;
 use App\Http\Requests\IndexRoleRequest;
+use App\Http\Requests\ShowUserRequest;
+use App\Http\Requests\UpdateRolePermissionRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Repositories\PermissionRepository;
 use App\Repositories\RoleRepository;
@@ -29,7 +31,17 @@ class RoleController extends Controller
             $params = $request->validated();
             return view('pages.admin.roles.role-list', ['roles' => $this->roleRepository->getAll($params), 'permissions' => $this->permissionRepository->getAll(['permission_paginate' => '0'])]);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Created new role False');
+            return redirect()->back()->with('error', 'Show list role False');
+        }
+    }
+
+    public function show(ShowUserRequest $request, $id)
+    {
+        try {
+            $params = $request->validated();
+            return view('pages.admin.roles.role-show', ['role' => $this->roleRepository->getById($id), 'permissions' => $this->permissionRepository->getAll(['permission_paginate' => '0']), 'showModal' => $params['show_modal'] ?? false]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Show role False');
         }
     }
 
@@ -57,6 +69,23 @@ class RoleController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Updated new role False');
+        }
+    }
+
+    public function updateRolePermission(UpdateRolePermissionRequest $request, $id)
+    {
+        try {
+            $params = $request->validated();
+            $message = $this->roleRepository->updateRolePermission($params, $id);
+            DB::commit();
+            if (!is_null($message)) {
+                DB::rollBack();
+                return redirect()->back()->with('error', $message);
+            };
+            return redirect()->back()->with('success', 'Updated role permissions success');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Updated role permissions False');
         }
     }
 

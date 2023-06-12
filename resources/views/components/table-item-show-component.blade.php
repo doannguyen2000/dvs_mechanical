@@ -28,7 +28,7 @@
 ])
 
 <div>
-    <table {{ $attributes->merge($option) }} style="min-width: 600px">
+    <table {{ $attributes->merge($option) }}>
         <thead>
             <tr>
                 <th class="text-center" scope="col">
@@ -41,7 +41,9 @@
                 @foreach ($itemColumn['tableColumnName'] as $column)
                     <th class="text-start" scope="col">{{ $column }}</th>
                 @endforeach
-                <th class="text-center" scope="col">{{ __('Action') }}</th>
+                @if (!empty($itemFunctions))
+                    <th class="text-center" scope="col">{{ __('Action') }}</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -67,46 +69,49 @@
                         <td scope="col">{!! $item->{$key}->{reset($column)} ?? '' !!}&nbsp;{!! $item->{$key}->{end($column)} ?? '' !!}</td>
                     @endforeach
                     <td class="text-center">
-                        @if (in_array('updateRole', $itemFunctions))
-                            <div class="dropdown show" style="display: inline-block;">
-                                <button class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2"
-                                    style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)" type="button"
-                                    data-bs-toggle="dropdown" aria-expanded="true">
-                                    <i class="fa-solid fa-user-shield"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    @isset($valueOthers)
-                                        @if (!empty($valueOthers['roles']))
-                                            <li><a class="dropdown-item"
-                                                    @if (!is_null($item->role_code)) onclick="submitForm('{{ $formSubmit }}','{{ route('admin.users.updateRoleUser', ['id' => $item->id]) }}','POST', '{{ $formSubmit }} .input-form-update-role-code', '')" @endif>{{ __('Delete Roll') }}</a>
-                                            </li>
-                                            @foreach ($valueOthers['roles'] as $role)
+                        @if (!empty($itemFunctions))
+                            @if (in_array('updateRole', $itemFunctions))
+                                <div class="dropdown show" style="display: inline-block;">
+                                    <button
+                                        class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2"
+                                        style="--bs-focus-ring-color: rgba(var(--bs-success-rgb), .25)" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="true">
+                                        <i class="fa-solid fa-user-shield"></i>
+                                    </button>
+                                    <ul class="dropdown-menu overflow-y-auto" style="max-height: 110px !important;">
+                                        @isset($valueOthers)
+                                            @if (!empty($valueOthers['roles']))
                                                 <li><a class="dropdown-item"
-                                                        onclick="submitForm('{{ $formSubmit }}','{{ route('admin.users.updateRoleUser', ['id' => $item->id]) }}','POST', '{{ $formSubmit }} .input-form-update-role-code', '{{ $role->role_code }}')">{!! $role->role_icon !!}&nbsp;{{ $role->role_name }}</a>
+                                                        @if (!is_null($item->role_code)) onclick="submitForm('{{ $formSubmit }}','{{ route('admin.users.updateRoleUser', ['id' => $item->id]) }}','POST', '{{ $formSubmit }} .input-form-update-role-code', '')" @endif>{{ __('Delete Roll') }}</a>
                                                 </li>
-                                            @endforeach
-                                        @endif
-                                    @endisset
-                                </ul>
-                            </div>
-                        @endif
-                        @if (in_array('show', $itemFunctions))
-                            <span class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2">
-                                <a class="icon-link icon-link-hove" data-bs-toggle="modal"
-                                    data-bs-target="#{{ $modal['showItem']['id'] }}"
-                                    onclick="showItemModel('{{ $modal['showItem']['id'] . ' .modal-body' }}','{{ route($modal['showItem']['route'], ['id' => $item->id]) }}');"
-                                    style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
-                                    <i class="bi fa-solid fa-eye"></i>
-                                </a>
-                            </span>
-                        @endif
-                        @if (in_array('delete', $itemFunctions))
-                            <span class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2">
-                                <a class="icon-link icon-link-hover" onclick="deleteItem('{{ $item->id }}')"
-                                    style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
-                                    <i class="bi fa-regular fa-trash-can text-danger"></i>
-                                </a>
-                            </span>
+                                                @foreach ($valueOthers['roles'] as $role)
+                                                    <li><a class="dropdown-item"
+                                                            onclick="submitForm('{{ $formSubmit }}','{{ route('admin.users.updateRoleUser', ['id' => $item->id]) }}','POST', '{{ $formSubmit }} .input-form-update-role-code', '{{ $role->role_code }}')">{!! $role->role_icon !!}&nbsp;{{ $role->role_name }}</a>
+                                                    </li>
+                                                @endforeach
+                                            @endif
+                                        @endisset
+                                    </ul>
+                                </div>
+                            @endif
+                            @if (in_array('show', $itemFunctions))
+                                <span class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2">
+                                    <a class="icon-link icon-link-hove" data-bs-toggle="modal"
+                                        data-bs-target="#{{ $modal['showItem']['id'] }}"
+                                        onclick="showItemModel('{{ $modal['showItem']['id'] . ' .modal-body' }}','{{ route($modal['showItem']['route'], ['id' => $item->id]) }}');"
+                                        style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
+                                        <i class="bi fa-solid fa-eye"></i>
+                                    </a>
+                                </span>
+                            @endif
+                            @if (in_array('delete', $itemFunctions))
+                                <span class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2">
+                                    <a class="icon-link icon-link-hover" onclick="deleteItem('{{ $item->id }}')"
+                                        style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
+                                        <i class="bi fa-regular fa-trash-can text-danger"></i>
+                                    </a>
+                                </span>
+                            @endif
                         @endif
                     </td>
                 </tr>
