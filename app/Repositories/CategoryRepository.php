@@ -9,14 +9,18 @@ class CategoryRepository
     public function getAll($params)
     {
         $categories = Category::where(function ($query) use ($params) {
-            if (!empty($params['search']))
+            if (!empty($params['search'])) {
                 $query->where('category_name', 'like', '%' . $params['search'] . '%')
                     ->orWhere('category_code', 'like', '%' . $params['search'] . '%');
+            }
+            if (!empty($params['status']) && in_array($params['status'], ['0', '1'])) {
+                $query->where('status', $params['status']);
+            }
         });
-        if (isset($params['paginate']) && $params['permission_paginate'] === '0') {
+        if (isset($params['paginate']) && $params['paginate'] === '0') {
             return $categories->get();
         } else {
-            return $categories->paginate((isset($params['permission_paginate']) ? $params['paginate'] : 5));
+            return $categories->paginate((isset($params['paginate']) ? $params['paginate'] : 5));
         }
     }
 
@@ -42,8 +46,8 @@ class CategoryRepository
     }
 
 
-    public function destroy($params)
+    public function destroy($ids)
     {
-        return Category::whereIn('id', $params)->delete();
+        return Category::whereIn('id', array_unique(explode(',', $ids)))->delete();
     }
 }
