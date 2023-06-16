@@ -26,8 +26,8 @@ return new class extends Migration
             $table->id();
             $table->string('product_name');
             $table->string('product_code')->unique();
-            $table->decimal('product_price', 8, 2)->nullable();
-            $table->decimal('product_sale', 8, 2)->nullable();
+            $table->decimal('product_price', 50, 2)->nullable();
+            $table->decimal('product_sale', 3, 2)->nullable();
             $table->string('product_description')->nullable();
             $table->boolean('product_status')->default(true)->nullable();
             $table->string('product_type_code')->nullable();

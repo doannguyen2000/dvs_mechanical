@@ -3,8 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class UserRepository
 {
@@ -48,10 +50,23 @@ class UserRepository
         $user = User::find($id);
         if (!empty($params['file_avatar'])) {
             if (!empty($user->avatar)) Storage::delete('public/users/' . $user->avatar);
-            $fileName = 'user_' . $user->id . '.jpg';
-            Storage::putFileAs('public/users', $params['file_avatar'], $fileName);
-            $params['avatar'] = $fileName;
+            $storagePath = storage_path('app/public/users/');
+
+            if (!File::exists($storagePath)) {
+                File::makeDirectory($storagePath, 0755, true);
+            }
+
+            $fileName = uniqid() . '.' . $params['file_avatar']->getClientOriginalExtension();
+
+            $imagePath = $storagePath . $fileName;
+
+            $resizedImage = Image::make($params['file_avatar'])->fit(600, 600)->save($imagePath);
+
+            $resizedImage->save($imagePath);
+
+            $params['avatar'] = 'users/' . $fileName;
         }
+
         $params['address'] = $params['ward'] . "-" . $params['district'] . "-" . $params['province'];
         $params['full_name'] = $params['last_name'] . ' ' . $params['first_name'];
 

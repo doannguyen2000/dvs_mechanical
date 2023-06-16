@@ -17,7 +17,7 @@
                     <button class="btn border dropdown-toggle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false" style="min-width: 136px;">
                         <span><img
-                                src="@if (!empty(Auth::user()->avatar)) {{ asset(Storage::url('users/' . Auth::user()->avatar)) }}@else{{ asset('assets/images/adminAvatar.jpg') }} @endif"
+                                src="@if (!empty(Auth::user()->avatar)) {{ asset(Storage::url(Auth::user()->avatar)) }}@else{{ asset('assets/images/adminAvatar.jpg') }} @endif"
                                 style="height: 25px;width: 25px;" class="border rounded-5"
                                 alt="..."></span>&nbsp;{{ Auth::user()->name }}
                     </button>

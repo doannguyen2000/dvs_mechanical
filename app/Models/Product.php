@@ -20,4 +20,34 @@ class Product extends Model
         'product_status',
         'product_type_code'
     ];
+
+    public function productImages()
+    {
+        return $this->hasMany(
+            ProductImage::class,
+            'product_code',
+            'product_code'
+        );
+    }
+
+    public function productType()
+    {
+        return $this->hasOne(
+            ProductType::class,
+            'product_type_code',
+            'product_type_code'
+        );
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(
+            Category::class,
+            'product_categories',
+            'product_code',
+            'category_code',
+            'product_code',
+            'category_code',
+        );
+    }
 }

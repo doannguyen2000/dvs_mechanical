@@ -5,7 +5,6 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\TestComponentController;
 use App\Http\Controllers\User\UserController as UserUserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -50,9 +49,11 @@ Route::middleware(['auth', 'online'])->group(function () {
 
         Route::prefix('products')->group(function () {
             Route::get('',  [ProductController::class, 'index'])->name('admin.products.list');
+            Route::get('{id}',  [ProductController::class, 'show'])->name('admin.products.show');
             Route::post('', [ProductController::class, 'store'])->name('admin.products.store');
             Route::post('delete', [ProductController::class, 'destroy'])->name('admin.products.destroy');
             Route::post('{id}', [ProductController::class, 'update'])->name('admin.products.update');
+            Route::post('update-product-category/{id}', [ProductController::class, 'updateProductCategory'])->name('admin.products.updateProductCategory');
         });
 
         Route::prefix('roles')->group(function () {

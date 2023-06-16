@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="card mt-4">
+        <div class="card mt-4 bg-body-tertiary">
             <div class="card-body z-index-0 text-start">
                 <h5 class="card-title">Products list</h5>
                 <hr>

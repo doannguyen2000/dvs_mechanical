@@ -11,7 +11,6 @@ use App\Http\Requests\UpdateRolePermissionRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Repositories\PermissionRepository;
 use App\Repositories\RoleRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
