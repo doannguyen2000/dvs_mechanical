@@ -10,7 +10,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             @endif
-            <div class="modal-body">
+            <div class="modal-body m-0 p-0">
                 {{ $slot }}
             </div>
         </div>

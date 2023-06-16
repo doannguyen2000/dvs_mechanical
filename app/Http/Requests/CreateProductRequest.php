@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ExistsInTable;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateProductRequest extends FormRequest
@@ -13,7 +14,7 @@ class CreateProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,12 @@ class CreateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'product_name' => ['required', 'string', 'max:50'],
+            'product_price' => ['required', 'numeric', 'min:10000'],
+            'product_sale' => ['required', 'numeric', 'min:0', 'max:100'],
+            'product_description' => ['nullable', 'string', 'max:3000'],
+            'product_status' => ['nullable', 'boolean'],
+            'product_type_code' => ['nullable', new ExistsInTable('product_types', 'product_type_code')]
         ];
     }
 }

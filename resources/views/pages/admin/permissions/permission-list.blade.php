@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="card mt-4">
+        <div class="card mt-4 bg-body-tertiary">
             <div class="card-body text-start">
                 <h5 class="card-title">{{ __('Permission list') }}</h5>
                 <hr>
@@ -33,7 +33,7 @@
                     ]" :icon="'fa-solid fa-plus'" />
                 </div>
                 <hr>
-                <div class="overflow-y-auto border rounded mb-3" style="height: 35.5vh !important;">
+                <div class="overflow-y-auto border rounded mb-3 bg-body-secondary" style="height: 35.5vh !important;">
                     <x-table-item-show-component :option="[
                         'class' => 'table m-0',
                         'id' => 'tableShowRole',
@@ -104,7 +104,7 @@
 
 @section('modal')
     <x-modal-notification-component :modal-id="'modalNotification'" />
-    <x-modal-item-show-component :modal-id="'showItemInformationModal'" :modal-size="'modal-lg'" />
+    <x-modal-item-show-component :modal-id="'showItemInformationModal'" :modal-size="'modal-xl'" />
     <x-modal-item-new-component :modal-title="'Create permission'" :modal-id="'addItemInformationModal'" :modal-size="''" :array-input="['Permission name' => 'permission_name']"
         :array-textareat="[]" :array-select="[]" :array-checkbox="[]" :route="['name' => 'admin.permissions.store', 'method' => 'post']" />
 @endsection

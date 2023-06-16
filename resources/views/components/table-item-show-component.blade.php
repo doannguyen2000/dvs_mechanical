@@ -58,12 +58,15 @@
                     </th>
                     @foreach ($itemColumn['columnImage'] as $column)
                         <td>
-                            <img src="@if (!empty($item->{$column})) {{ asset(Storage::url('users/' . $item->{$column})) }}@else{{ asset('assets/images/adminAvatar.jpg') }} @endif"
+                            <img src="@if (!empty($item->{$column})) {{ asset(Storage::url($item->{$column})) }}@else{{ asset('assets/images/adminAvatar.jpg') }} @endif"
                                 class="img-fluid rounded border" style="width: 25px;height: 25px;" alt="...">
                         </td>
                     @endforeach
                     @foreach ($itemColumn['column'] as $column)
                         <td scope="col">{!! $item->{$column} !!}</td>
+                    @endforeach
+                    @foreach ($itemColumn['columnWith'] as $key => $column)
+                        <td scope="col">{!! $item->{$key}->{$column} !!}</td>
                     @endforeach
                     @foreach ($itemColumn['columnWithIcon'] as $key => $column)
                         <td scope="col">{!! $item->{$key}->{reset($column)} ?? '' !!}&nbsp;{!! $item->{$key}->{end($column)} ?? '' !!}</td>
@@ -106,7 +109,8 @@
                             @endif
                             @if (in_array('delete', $itemFunctions))
                                 <span class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2">
-                                    <a class="icon-link icon-link-hover" onclick="deleteItem('{{ $item->id }}')"
+                                    <a role="button" class="icon-link icon-link-hover"
+                                        onclick="deleteItem('{{ $item->id }}')"
                                         style="--bs-icon-link-transform: translate3d(0, -.125rem, 0);" href="#">
                                         <i class="bi fa-regular fa-trash-can text-danger"></i>
                                     </a>

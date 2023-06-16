@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="card mt-4">
+        <div class="card mt-4 bg-body-tertiary">
             <div class="card-body z-index-0 text-start">
                 <h5 class="card-title">Users list</h5>
                 <hr>
@@ -33,7 +33,7 @@
                     ]" :icon="'fa-solid fa-plus'" />
                 </div>
                 <hr>
-                <div class="overflow-y-auto border rounded mb-3" style="height: 35.5vh !important;">
+                <div class="overflow-y-auto border rounded mb-3 bg-body-secondary" style="height: 35.5vh !important;">
                     <x-table-item-show-component :option="[
                         'class' => 'table m-0',
                         'id' => 'tableShowRole',
